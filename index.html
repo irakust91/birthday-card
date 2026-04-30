@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>С Днём Рождения, Мамулечка!</title>
+  <style>
+    :root {
+      --bg1: #1f2b7b;
+      --bg2: #5b2ea1;
+      --text: #ffffff;
+      --accent: #ffd74f;
+      --gift: #ff4f8b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at 25% 25%, #3f52d8 0%, var(--bg1) 35%, var(--bg2) 100%);
+      overflow: hidden;
+    }
+
+    .scene {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 14px 30px;
+    }
+
+    .dialog {
+      margin-top: 8px;
+      max-width: 92vw;
+      background: rgba(0, 0, 0, 0.28);
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-radius: 16px;
+      padding: 14px 16px;
+      text-align: center;
+      font-size: clamp(20px, 3.6vw, 30px);
+      line-height: 1.3;
+      min-height: 96px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cat-area {
+      position: relative;
+      width: 100%;
+      height: 58vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+    }
+
+    .cat {
+      position: relative;
+      width: min(56vw, 250px);
+      aspect-ratio: 1/1.2;
+      transition: transform 700ms ease;
+      z-index: 3;
+    }
+
+    .cat.hide-body {
+      transform: translateY(58px) scale(0.92);
+    }
+
+    .head {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 68%;
+      height: 34%;
+      background: #f2c089;
+      border-radius: 48% 48% 43% 43%;
+      border: 3px solid #3c2a1d;
+      z-index: 4;
+    }
+
+    .ear {
+      position: absolute;
+      top: -18%;
+      width: 28%;
+      height: 36%;
+      background: #f2c089;
+      border: 3px solid #3c2a1d;
+      border-radius: 75% 25% 65% 35%;
+    }
+
+    .ear.left { left: 8%; transform: rotate(-10deg); }
+    .ear.right { right: 8%; transform: scaleX(-1) rotate(-10deg); }
+
+    .face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      font-size: clamp(22px, 4vw, 32px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-origin: center 70%;
+      transition: transform 220ms ease;
+    }
+
+    .face.look-box { transform: rotate(-14deg) translateX(-8px); }
+
+    .body {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 74%;
+      height: 62%;
+      background: #f5c997;
+      border: 3px solid #3c2a1d;
+      border-radius: 45% 45% 34% 34%;
+    }
+
+    .paw {
+      position: absolute;
+      bottom: 13%;
+      width: 18%;
+      height: 16%;
+      background: #f2c089;
+      border: 3px solid #3c2a1d;
+      border-radius: 40%;
+      transition: transform 500ms ease;
+      z-index: 7;
+    }
+
+    .paw.left { left: 18%; }
+    .paw.right { right: 18%; }
+
+    .cat.hold-gift .paw.left,
+    .cat.hold-gift .paw.right {
+      transform: translateY(-20px);
+    }
+
+    .props {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .box,
+    .gift {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 3px solid #47351f;
+      transition: all 700ms ease;
+      z-index: 5;
+    }
+
+    .box {
+      width: min(32vw, 130px);
+      height: min(22vw, 92px);
+      bottom: 16%;
+      background: #ba8a5e;
+      border-radius: 5px;
+      opacity: 0;
+    }
+
+    .box::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: -18%;
+      width: 100%;
+      height: 18%;
+      background: #cf9a69;
+      border: 3px solid #47351f;
+      border-bottom: none;
+      box-sizing: border-box;
+    }
+
+    .box.show { opacity: 1; }
+    .box.forward { transform: translateX(-50%) translateY(-18px) scale(1.15); }
+    .box.drop { transform: translateX(-50%) translateY(64px) rotate(8deg); }
+    .box.big { transform: translateX(-50%) translateY(42px) scale(1.75); z-index: 10; }
+    .box.shake { animation: shake 320ms linear infinite; }
+    .box.down { transform: translateX(-50%) translateY(190px) scale(1.4); }
+
+    .gift {
+      width: min(30vw, 120px);
+      height: min(30vw, 120px);
+      bottom: 17%;
+      background: var(--gift);
+      border-radius: 10px;
+      opacity: 0;
+      z-index: 6;
+    }
+
+    .gift::before,
+    .gift::after {
+      content: "";
+      position: absolute;
+      background: #ffe45f;
+    }
+
+    .gift::before { width: 20%; height: 100%; left: 40%; top: 0; }
+    .gift::after { width: 100%; height: 20%; left: 0; top: 40%; }
+    .gift.show { opacity: 1; }
+
+    .controls {
+      min-height: 88px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      z-index: 20;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 13px 26px;
+      font-size: clamp(18px, 4vw, 24px);
+      font-weight: 700;
+      background: var(--accent);
+      color: #2b2155;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
+    }
+
+    .hidden { display: none; }
+
+    .confetti {
+      position: absolute;
+      width: 8px;
+      height: 14px;
+      top: 70%;
+      opacity: 0;
+      z-index: 30;
+      animation: fly 1200ms ease-out forwards;
+    }
+
+    .firework {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 currentColor;
+      animation: boom 900ms ease-out forwards;
+      z-index: 28;
+    }
+
+    .final-text {
+      position: absolute;
+      top: 18%;
+      left: 50%;
+      transform: translateX(-50%) scale(0.5);
+      opacity: 0;
+      font-size: clamp(28px, 7vw, 52px);
+      text-align: center;
+      width: 90vw;
+      color: #ffe99c;
+      text-shadow: 0 0 20px rgba(255, 212, 59, 0.6);
+      transition: all 900ms ease;
+      z-index: 25;
+    }
+
+    .final-text.show { opacity: 1; transform: translateX(-50%) scale(1); }
+
+    @keyframes fly {
+      from { transform: translateY(0) rotate(0deg); opacity: 1; }
+      to { transform: translateY(-280px) rotate(520deg); opacity: 0; }
+    }
+
+    @keyframes boom {
+      from { box-shadow: 0 0 0 0 currentColor; opacity: 1; }
+      to { box-shadow: 0 0 0 32px transparent; opacity: 0; }
+    }
+
+    @keyframes shake {
+      0% { transform: translateX(-50%) translateY(42px) rotate(-2deg) scale(1.75); }
+      50% { transform: translateX(-50%) translateY(46px) rotate(2deg) scale(1.75); }
+      100% { transform: translateX(-50%) translateY(42px) rotate(-2deg) scale(1.75); }
+    }
+  </style>
+</head>
+<body>
+  <main class="scene">
+    <div id="dialog" class="dialog">Привет! У тебя сегодня день рождения?</div>
+
+    <section class="cat-area">
+      <div class="cat" id="cat">
+        <div class="head">
+          <div class="ear left"></div>
+          <div class="ear right"></div>
+          <div class="face" id="face">🐱</div>
+        </div>
+        <div class="body"></div>
+        <div class="paw left"></div>
+        <div class="paw right"></div>
+      </div>
+
+      <div class="props" id="props">
+        <div class="box" id="box"></div>
+        <div class="gift" id="gift"></div>
+      </div>
+
+      <div class="final-text" id="finalText">С Днём Рождения, Мамулечка!</div>
+    </section>
+
+    <div class="controls" id="controls">
+      <button class="btn" id="yesBtn">ДА</button>
+      <button class="btn hidden" id="takeBtn">Взять</button>
+      <button class="btn hidden" id="openBtn">Открыть</button>
+    </div>
+  </main>
+
+  <script>
+    const dialog = document.getElementById('dialog');
+    const cat = document.getElementById('cat');
+    const face = document.getElementById('face');
+    const box = document.getElementById('box');
+    const gift = document.getElementById('gift');
+    const props = document.getElementById('props');
+    const finalText = document.getElementById('finalText');
+
+    const yesBtn = document.getElementById('yesBtn');
+    const takeBtn = document.getElementById('takeBtn');
+    const openBtn = document.getElementById('openBtn');
+
+    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    yesBtn.addEventListener('click', async () => {
+      yesBtn.classList.add('hidden');
+      dialog.textContent = 'Тогда это тебе!';
+      box.classList.add('show', 'forward');
+      await wait(1100);
+
+      face.classList.add('look-box');
+      dialog.textContent = 'Ой, нет, это мне... А вот это тебе!';
+      await wait(1000);
+
+      box.classList.remove('forward');
+      box.classList.add('drop');
+      gift.classList.add('show');
+      cat.classList.add('hold-gift');
+      face.classList.remove('look-box');
+
+      takeBtn.classList.remove('hidden');
+    });
+
+    takeBtn.addEventListener('click', async () => {
+      takeBtn.classList.add('hidden');
+      dialog.textContent = 'Держи подарок!';
+      box.classList.remove('drop');
+      box.classList.add('big');
+      cat.classList.add('hide-body');
+      await wait(850);
+      openBtn.classList.remove('hidden');
+    });
+
+    openBtn.addEventListener('click', async () => {
+      openBtn.classList.add('hidden');
+      dialog.textContent = 'Открываем!';
+
+      box.classList.add('shake');
+      await wait(900);
+      box.classList.remove('shake');
+      box.classList.add('down');
+      gift.classList.remove('show');
+
+      launchParty();
+      await wait(500);
+      finalText.classList.add('show');
+      dialog.textContent = 'С любовью! ❤️';
+    });
+
+    function launchParty() {
+      for (let i = 0; i < 60; i++) {
+        const c = document.createElement('span');
+        c.className = 'confetti';
+        c.style.left = `${10 + Math.random() * 80}%`;
+        c.style.background = `hsl(${Math.random() * 360}, 95%, 65%)`;
+        c.style.animationDelay = `${Math.random() * 280}ms`;
+        props.appendChild(c);
+        setTimeout(() => c.remove(), 1500);
+      }
+
+      for (let i = 0; i < 16; i++) {
+        const f = document.createElement('span');
+        f.className = 'firework';
+        f.style.left = `${15 + Math.random() * 70}%`;
+        f.style.top = `${12 + Math.random() * 34}%`;
+        f.style.color = `hsl(${Math.random() * 360}, 100%, 70%)`;
+        f.style.animationDelay = `${Math.random() * 360}ms`;
+        props.appendChild(f);
+        setTimeout(() => f.remove(), 1000);
+      }
+    }
+  </script>
+</body>
+</html>
